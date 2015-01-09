@@ -20,10 +20,10 @@ DIGITS = int(config.get('digits', 'unit_price_digits', 4))
 class Template:
     __name__ = "product.template"
     list_price_with_tax = fields.Property(fields.Numeric('List Price With Tax',
-            states=STATES, digits=(16, DIGITS), depends=DEPENDS, required=True)
+            states=STATES, digits=(16, DIGITS), depends=DEPENDS)
             )
     cost_price_with_tax = fields.Property(fields.Numeric('Cost Price With Tax',
-            states=STATES, digits=(16, DIGITS), depends=DEPENDS, required=True)
+            states=STATES, digits=(16, DIGITS), depends=DEPENDS)
             )
 
     @fields.depends('list_price')
