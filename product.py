@@ -130,9 +130,10 @@ class Template:
             changes = super(Template, self).on_change_category()
         except AttributeError:
             changes = {}
-        changes['list_price_with_tax'] = None
-        changes['cost_price_with_tax'] = None
-        if self.category:
-            changes['list_price_with_tax'] = self.get_list_price_with_tax()
-            changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
+        if self.taxes_category:
+            changes['list_price_with_tax'] = None
+            changes['cost_price_with_tax'] = None
+            if self.category:
+                changes['list_price_with_tax'] = self.get_list_price_with_tax()
+                changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
         return changes
