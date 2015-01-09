@@ -26,62 +26,62 @@ class Template:
             states=STATES, digits=(16, DIGITS), depends=DEPENDS)
             )
 
+    def get_list_price_with_tax(self):
+        Tax = Pool().get('account.tax')
+        taxes = [Tax(t) for t in self.get_taxes('customer_taxes')]
+        taxes = Tax.compute(taxes, self.list_price, 1.0)
+        tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
+        return self.list_price + tax_amount
+
     @fields.depends('list_price')
     def on_change_list_price(self):
-        pool = Pool()
-        Tax = pool.get('account.tax')
         try:
             changes = super(Template, self).on_change_list_price()
         except AttributeError:
             changes = {}
         if self.list_price:
-            taxes = [Tax(t) for t in self.get_taxes('customer_taxes')]
-            taxes = Tax.compute(taxes, self.list_price, 1.0)
-            tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
-            changes['list_price_with_tax'] = self.list_price + tax_amount
+            changes['list_price_with_tax'] = self.get_list_price_with_tax()
         return changes
+
+    def get_list_price(self):
+        Tax = Pool().get('account.tax')
+        taxes = [Tax(t) for t in self.get_taxes('customer_taxes')]
+        tax_amount = Tax.reverse_compute(self.list_price_with_tax, taxes)
+        return tax_amount.quantize(Decimal(str(10.0 ** -DIGITS)))
 
     @fields.depends('list_price_with_tax')
     def on_change_list_price_with_tax(self):
-        pool = Pool()
-        Tax = pool.get('account.tax')
-        try:
-            changes = super(Template, self).on_change_list_price_with_tax()
-        except AttributeError:
-            changes = {}
+        changes = {}
         if self.list_price_with_tax:
-            taxes = [Tax(t) for t in self.get_taxes('customer_taxes')]
-            tax_amount = Tax.reverse_compute(self.list_price_with_tax, taxes)
-            changes['list_price'] = tax_amount.quantize(
-                Decimal(str(10.0 ** -DIGITS)))
+            changes['list_price'] = self.get_list_price()
         return changes
+
+    def get_cost_price_with_tax(self):
+        Tax = Pool().get('account.tax')
+        taxes = [Tax(t) for t in self.get_taxes('supplier_taxes')]
+        taxes = Tax.compute(taxes, self.cost_price, 1.0)
+        tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
+        return self.cost_price + tax_amount
 
     @fields.depends('cost_price')
     def on_change_cost_price(self):
-        pool = Pool()
-        Tax = pool.get('account.tax')
         try:
             changes = super(Template, self).on_change_cost_price()
         except AttributeError:
             changes = {}
         if self.cost_price:
-            taxes = [Tax(t) for t in self.get_taxes('supplier_taxes')]
-            taxes = Tax.compute(taxes, self.cost_price, 1.0)
-            tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
-            changes['cost_price_with_tax'] = self.cost_price + tax_amount
+            changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
         return changes
+
+    def get_cost_price(self):
+        Tax = Pool().get('account.tax')
+        taxes = [Tax(t) for t in self.get_taxes('supplier_taxes')]
+        tax_amount = Tax.reverse_compute(self.cost_price_with_tax, taxes)
+        return tax_amount.quantize(Decimal(str(10.0 ** -DIGITS)))
 
     @fields.depends('cost_price_with_tax')
     def on_change_cost_price_with_tax(self):
-        pool = Pool()
-        Tax = pool.get('account.tax')
-        try:
-            changes = super(Template, self).on_change_cost_price_with_tax()
-        except AttributeError:
-            changes = {}
+        changes = {}
         if self.cost_price_with_tax:
-            taxes = [Tax(t) for t in self.get_taxes('supplier_taxes')]
-            tax_amount = Tax.reverse_compute(self.cost_price_with_tax, taxes)
-            changes['cost_price'] = tax_amount.quantize(
-                Decimal(str(10.0 ** -DIGITS)))
+            changes['cost_price'] = self.get_cost_price()
         return changes
