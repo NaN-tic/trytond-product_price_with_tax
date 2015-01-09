@@ -85,3 +85,15 @@ class Template:
         if self.cost_price_with_tax:
             changes['cost_price'] = self.get_cost_price()
         return changes
+
+    @fields.depends('taxes_category', 'list_price', 'cost_price')
+    def on_change_taxes_category(self):
+        try:
+            changes = super(Template, self).on_change_taxes_category()
+        except AttributeError:
+            changes = {}
+        if self.list_price:
+            changes['list_price_with_tax'] = self.get_list_price_with_tax()
+        if self.cost_price:
+            changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
+        return changes
