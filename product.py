@@ -33,7 +33,7 @@ class Template:
         tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
         return self.list_price + tax_amount
 
-    @fields.depends('taxes_category', 'list_price', 'customer_taxes',
+    @fields.depends('list_price', 'customer_taxes', 'taxes_category',
         'category')
     def on_change_list_price(self):
         try:
@@ -50,8 +50,7 @@ class Template:
         tax_amount = Tax.reverse_compute(self.list_price_with_tax, taxes)
         return tax_amount.quantize(Decimal(str(10.0 ** -DIGITS)))
 
-    @fields.depends('taxes_category', 'list_price_with_tax', 'customer_taxes',
-        'category')
+    @fields.depends('list_price_with_tax', 'customer_taxes')
     def on_change_list_price_with_tax(self):
         changes = {}
         if self.list_price_with_tax:
@@ -65,7 +64,7 @@ class Template:
         tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
         return self.cost_price + tax_amount
 
-    @fields.depends('taxes_category', 'cost_price', 'supplier_taxes',
+    @fields.depends('cost_price', 'supplier_taxes', 'taxes_category',
         'category')
     def on_change_cost_price(self):
         try:
@@ -82,8 +81,7 @@ class Template:
         tax_amount = Tax.reverse_compute(self.cost_price_with_tax, taxes)
         return tax_amount.quantize(Decimal(str(10.0 ** -DIGITS)))
 
-    @fields.depends('taxes_category', 'category', 'cost_price_with_tax',
-        'supplier_taxes', 'category')
+    @fields.depends('cost_price_with_tax', 'supplier_taxes')
     def on_change_cost_price_with_tax(self):
         changes = {}
         if self.cost_price_with_tax:
