@@ -27,11 +27,12 @@ class Template:
             )
 
     def get_list_price_with_tax(self):
-        Tax = Pool().get('account.tax')
-        taxes = [Tax(t) for t in self.get_taxes('customer_taxes_used')]
-        taxes = Tax.compute(taxes, self.list_price, 1.0)
-        tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
-        return self.list_price + tax_amount
+        if self.list_price:
+            Tax = Pool().get('account.tax')
+            taxes = [Tax(t) for t in self.get_taxes('customer_taxes_used')]
+            taxes = Tax.compute(taxes, self.list_price, 1.0)
+            tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
+            return self.list_price + tax_amount
 
     @fields.depends('list_price', 'customer_taxes', 'taxes_category',
         'category')
@@ -58,11 +59,12 @@ class Template:
         return changes
 
     def get_cost_price_with_tax(self):
-        Tax = Pool().get('account.tax')
-        taxes = [Tax(t) for t in self.get_taxes('supplier_taxes_used')]
-        taxes = Tax.compute(taxes, self.cost_price, 1.0)
-        tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
-        return self.cost_price + tax_amount
+        if self.cost_price:
+            Tax = Pool().get('account.tax')
+            taxes = [Tax(t) for t in self.get_taxes('supplier_taxes_used')]
+            taxes = Tax.compute(taxes, self.cost_price, 1.0)
+            tax_amount = sum([t['amount'] for t in taxes], Decimal('0.0'))
+            return self.cost_price + tax_amount
 
     @fields.depends('cost_price', 'supplier_taxes', 'taxes_category',
         'category')
