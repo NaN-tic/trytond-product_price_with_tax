@@ -3,14 +3,26 @@
 The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <data>
+    <xpath expr="/form/notebook/page/label[@name='list_price']"
+            position="replace"/>
     <xpath expr="/form/notebook/page/field[@name='list_price']"
-            position="after">
-        <label name="list_price_with_tax"/>
-        <field name="list_price_with_tax"/>
+            position="replace">
+        <group col="4" colspan="2" id="list_price">
+            <label name="list_price"/>
+            <field name="list_price"/>
+            <label name="list_price_with_tax"/>
+            <field name="list_price_with_tax"/>
+        </group>
     </xpath>
+    <xpath expr="/form/notebook/page/label[@name='cost_price']"
+            position="replace"/>
     <xpath expr="/form/notebook/page/field[@name='cost_price']"
-            position="after">
-        <label name="cost_price_with_tax"/>
-        <field name="cost_price_with_tax"/>
+            position="replace">
+        <group col="4" colspan="2" id="cost_price">
+            <label name="cost_price"/>
+            <field name="cost_price"/>
+            <label name="cost_price_with_tax"/>
+            <field name="cost_price_with_tax"/>
+        </group>
     </xpath>
 </data>
