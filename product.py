@@ -38,12 +38,11 @@ class Template:
         'customer_taxes')
     def on_change_list_price(self):
         try:
-            changes = super(Template, self).on_change_list_price()
+            super(Template, self).on_change_list_price()
         except AttributeError:
-            changes = {}
+            pass
         if self.list_price:
-            changes['list_price_with_tax'] = self.get_list_price_with_tax()
-        return changes
+            self.list_price_with_tax = self.get_list_price_with_tax()
 
     def get_list_price(self):
         Tax = Pool().get('account.tax')
@@ -54,10 +53,8 @@ class Template:
     @fields.depends('taxes_category', 'category', 'list_price_with_tax',
         'customer_taxes')
     def on_change_list_price_with_tax(self):
-        changes = {}
         if self.list_price_with_tax:
-            changes['list_price'] = self.get_list_price()
-        return changes
+            self.list_price = self.get_list_price()
 
     def get_cost_price_with_tax(self):
         Tax = Pool().get('account.tax')
@@ -71,12 +68,11 @@ class Template:
         'supplier_taxes')
     def on_change_cost_price(self):
         try:
-            changes = super(Template, self).on_change_cost_price()
+            super(Template, self).on_change_cost_price()
         except AttributeError:
-            changes = {}
+            pass
         if self.cost_price:
-            changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
-        return changes
+            self.cost_price_with_tax = self.get_cost_price_with_tax()
 
     def get_cost_price(self):
         Tax = Pool().get('account.tax')
@@ -87,34 +83,30 @@ class Template:
     @fields.depends('taxes_category', 'category', 'cost_price_with_tax',
         'supplier_taxes')
     def on_change_cost_price_with_tax(self):
-        changes = {}
         if self.cost_price_with_tax:
-            changes['cost_price'] = self.get_cost_price()
-        return changes
+            self.cost_price = self.get_cost_price()
 
     @fields.depends('taxes_category', 'category', 'list_price', 'cost_price',
         'customer_taxes', 'supplier_taxes')
     def on_change_taxes_category(self):
         try:
-            changes = super(Template, self).on_change_taxes_category()
+            super(Template, self).on_change_taxes_category()
         except AttributeError:
-            changes = {}
+            pass
         if self.list_price:
-            changes['list_price_with_tax'] = self.get_list_price_with_tax()
+            self.list_price_with_tax = self.get_list_price_with_tax()
         if self.cost_price:
-            changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
-        return changes
+            self.cost_price_with_tax = self.get_cost_price_with_tax()
 
     @fields.depends('taxes_category', 'list_price', 'cost_price',
         'customer_taxes')
     def on_change_customer_taxes(self):
         try:
-            changes = super(Template, self).on_change_taxes_category()
+            super(Template, self).on_change_taxes_category()
         except AttributeError:
-            changes = {}
+            pass
         if self.list_price:
-            changes['list_price_with_tax'] = self.get_list_price_with_tax()
-        return changes
+            self.list_price_with_tax = self.get_list_price_with_tax()
 
     @fields.depends('taxes_category', 'list_price', 'cost_price',
         'supplier_taxes')
@@ -131,13 +123,12 @@ class Template:
         'customer_taxes', 'supplier_taxes')
     def on_change_category(self):
         try:
-            changes = super(Template, self).on_change_category()
+            super(Template, self).on_change_category()
         except AttributeError:
-            changes = {}
+            pass
         if self.taxes_category:
-            changes['list_price_with_tax'] = None
-            changes['cost_price_with_tax'] = None
+            self.list_price_with_tax = None
+            self.cost_price_with_tax = None
             if self.category:
-                changes['list_price_with_tax'] = self.get_list_price_with_tax()
-                changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
-        return changes
+                self.list_price_with_tax = self.get_list_price_with_tax()
+                self.cost_price_with_tax = self.get_cost_price_with_tax()
