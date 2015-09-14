@@ -112,12 +112,11 @@ class Template:
         'supplier_taxes')
     def on_change_supplier_taxes(self):
         try:
-            changes = super(Template, self).on_change_taxes_category()
+            super(Template, self).on_change_supplier_taxes()
         except AttributeError:
-            changes = {}
+            pass
         if self.cost_price:
-            changes['cost_price_with_tax'] = self.get_cost_price_with_tax()
-        return changes
+            self.cost_price_with_tax = self.get_cost_price_with_tax()
 
     @fields.depends('taxes_category', 'category', 'list_price', 'cost_price',
         'customer_taxes', 'supplier_taxes')
