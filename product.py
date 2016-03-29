@@ -8,7 +8,6 @@ from trytond.pyson import Eval
 from trytond.config import config as config_
 
 __all__ = ['Template']
-__metaclass__ = PoolMeta
 
 STATES = {
     'readonly': ~Eval('active', True),
@@ -18,6 +17,7 @@ DIGITS = config_.getint('product', 'price_decimal', default=4)
 
 
 class Template:
+    __metaclass__ = PoolMeta
     __name__ = "product.template"
     list_price_with_tax = fields.Property(fields.Numeric('List Price With Tax',
             states=STATES, digits=(16, DIGITS), depends=DEPENDS)
